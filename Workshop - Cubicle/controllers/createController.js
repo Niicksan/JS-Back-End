@@ -1,7 +1,5 @@
-//const { create } = require('../services/accomodationService');
-
 const router = require('express').Router();
-
+const { create } = require('../services/cubicleService');
 
 router.get('/', (req, res) => {
     res.render('create', {

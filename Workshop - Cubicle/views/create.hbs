@@ -1,7 +1,14 @@
 <section>
   <h1>Create</h1>
   <div class="form">
-    <form action='' method="">
+    <form action="" method="post">
+      {{#if error}}
+      <div class="error-box">
+        {{#each error}}
+        <p><span class="error">{{this}}</span></p>
+        {{/each}}
+      </div>
+      {{/if}}
       <label for="name">Name</label>
       <input type="text" id="name" name="name">
       <label for="name">Description</label>
