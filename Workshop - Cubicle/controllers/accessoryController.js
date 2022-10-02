@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const { createAccessory, getAllAccessories, attachAccessory } = require('../services/accessoryService');
-const { getById } = require('../services/cubicleService');
+const { getCubeById } = require('../services/cubesService');
 
 router.get('/create', async (req, res) => {
     res.render('./accessory/createAccessory', {
-        title: 'Create new Accessory',
-        accessories
+        title: 'Create new Accessory'
     });
 });
 
@@ -14,6 +13,7 @@ router.post('/create', async (req, res) => {
         await createAccessory(req.body);
         res.redirect('/');
     } catch (err) {
+        console.log(err);
         res.render('./accessory/createAccessory', {
             title: 'Request Error',
             error: err.message.split('\n')
@@ -23,7 +23,7 @@ router.post('/create', async (req, res) => {
 
 router.get('/attach/:id', async (req, res) => {
     const cubicleId = req.params.id;
-    const cubicle = await getById(cubicleId);
+    const cubicle = await getCubeById(cubicleId);
     const accessories = await getAllAccessories();
 
     if (cubicle) {

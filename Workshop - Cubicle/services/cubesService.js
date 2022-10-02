@@ -24,16 +24,15 @@ function getAll(search, fromDifficulty, toDifficulty) {
         .filter(r => r.difficultyLevel >= fromDifficulty && r.difficultyLevel <= toDifficulty);
 }
 
-function getAllCubicles(search, fromDifficulty, toDifficulty) {
+function getAllCubes(search, fromDifficulty, toDifficulty) {
     return Cube.find({}).lean();
 }
 
-function getById(id) {
+function getCubeById(id) {
     return Cube.findById(id).populate('accessories', 'name description imageUrl').lean();
 }
 
 async function create(cubicleData) {
-    console.log(cubicleData);
     const cubicle = {
         name: cubicleData.name,
         description: cubicleData.description,
@@ -53,7 +52,7 @@ async function create(cubicleData) {
 }
 
 module.exports = {
-    getAllCubicles,
-    getById,
+    getAllCubes,
+    getCubeById,
     create
 };
