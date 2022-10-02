@@ -1,9 +1,19 @@
 const env = process.env.NODE_ENV || 'development';
 
+const express = require('express');
 const config = require('./config/config')[env];
-const app = require('express')();
+const databaseConfig = require('./config/database');
+const expressConfig = require('./config/express');
+const routesConfig = require('./config/routes');
 
-require('./config/express')(app);
-require('./config/routes')(app);
+async function start() {
+    const app = express();
 
-app.listen(config.port, console.log(`Listening on port ${config.port}! Now its up to you...`));
+    await databaseConfig(app);
+    expressConfig(app);
+    routesConfig(app);
+
+    app.listen(config.port, console.log(`Server is listening on port ${config.port}! Now its up to you...`));
+}
+
+start();
