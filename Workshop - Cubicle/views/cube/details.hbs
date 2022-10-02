@@ -14,8 +14,8 @@
 
     <h2>Accessories</h2>
 
-    {{#if accessories}}
     <div class="accessories">
+        {{#if accessories}}
 
         {{#each accessories}}
         <div class="accessory">
@@ -30,7 +30,7 @@
         <div class="not-found">
             <h3 class="italic">This cube has no accessories yet...</h3>
         </div>
+        {{/if}}
     </div>
-    {{/if}}
     {{/with}}
 </section>

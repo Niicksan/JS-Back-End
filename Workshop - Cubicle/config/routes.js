@@ -1,7 +1,6 @@
 // Require Controllers
 const homeController = require('../controllers/homeController');
-const createController = require('../controllers/createController');
-const detailsController = require('../controllers/detailsController');
+const cubeController = require('../controllers/cubeController');
 const accessoryController = require('../controllers/accessoryController');
 const aboutController = require('../controllers/aboutController');
 const defaultController = require('../controllers/defaultController');
@@ -9,8 +8,7 @@ const defaultController = require('../controllers/defaultController');
 module.exports = (app) => {
     // Routes
     app.use(homeController);
-    app.use('/cube/', createController);
-    app.use('/details', detailsController);
+    app.use('/cube/', cubeController);
     app.use('/accessory', accessoryController);
     app.use('/about', aboutController);
     // TODO attach other controllers
