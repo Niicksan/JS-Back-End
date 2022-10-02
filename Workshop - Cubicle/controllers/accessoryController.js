@@ -1,19 +1,18 @@
 const router = require('express').Router();
-const { create } = require('../services/cubicleService');
+const { createAccessory } = require('../services/accessoryService');
 
 router.get('/create', (req, res) => {
-    res.render('./cubicle/create', {
-        title: 'Create new Cubicle'
+    res.render('./accessory/createAccessory', {
+        title: 'Create new Accessory'
     });
 });
 
 router.post('/create', async (req, res) => {
     try {
-        const result = await create(req.body);
-        console.log(result);
-        res.redirect('/details/' + result._id);
+        await createAccessory(req.body);
+        res.redirect('/');
     } catch (err) {
-        res.render('/create', {
+        res.render('./accessory/createAccessory', {
             title: 'Request Error',
             error: err.message.split('\n')
         });

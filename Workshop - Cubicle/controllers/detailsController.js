@@ -3,12 +3,12 @@ const { getById } = require('../services/cubicleService');
 const router = require('express').Router();
 
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const cubicleId = req.params.id;
-    const cubicle = getById(cubicleId);
+    const cubicle = await getById(cubicleId);
 
     if (cubicle) {
-        res.render('details', {
+        res.render('./cubicle/details', {
             title: 'Cubicle Details',
             cubicle
         });

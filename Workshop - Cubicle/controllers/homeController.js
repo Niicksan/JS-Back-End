@@ -1,15 +1,15 @@
 const router = require('express').Router();
-const { getAll } = require('../services/cubicleService');
+const { getAllCubicles } = require('../services/cubicleService');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     const search = req.query.search || '';
     const fromDifficulty = Number(req.query.from) || 1;
     const toDifficulty = Number(req.query.to) || 1000;
 
-    const cubicles = getAll(search, fromDifficulty, toDifficulty);
+    const cubicles = await getAllCubicles(search, fromDifficulty, toDifficulty);
 
     res.render('home', {
-        title: 'All Cubicles',
+        title: 'Home',
         cubicles,
         search,
         fromDifficulty,

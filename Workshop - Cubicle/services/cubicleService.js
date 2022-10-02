@@ -1,3 +1,5 @@
+const Cube = require('../models/Cube');
+
 const fs = require('fs');
 
 const filename = './config/database.json';
@@ -22,13 +24,17 @@ function getAll(search, fromDifficulty, toDifficulty) {
         .filter(r => r.difficultyLevel >= fromDifficulty && r.difficultyLevel <= toDifficulty);
 }
 
+function getAllCubicles(search, fromDifficulty, toDifficulty) {
+    return Cube.find({}).lean();
+}
+
 function getById(id) {
-    return data.find(i => i.id == id);
+    console.log(Cube.findById(id).lean())
+    return Cube.findById(id).lean();
 }
 
 async function create(cubicleData) {
     const cubicle = {
-        id: getId(),
         name: cubicleData.name,
         description: cubicleData.description,
         imageUrl: cubicleData.imageUrl,
@@ -36,22 +42,18 @@ async function create(cubicleData) {
     };
 
     const missing = Object.entries(cubicle).filter(([k, v]) => !v);
+
     if (missing.length > 0) {
         throw new Error(missing.map(m => `${m[0]} is required!`).join('\n'));
     }
 
-    data.push(cubicle);
-    await persist();
+    const result = await Cube.create(cubicle);
 
-    return cubicle;
-}
-
-function getId() {
-    return ('000000' + (Math.random() * 999999 | 0).toString(16)).slice(-6);
+    return result;
 }
 
 module.exports = {
-    getAll,
+    getAllCubicles,
     getById,
     create
 };
