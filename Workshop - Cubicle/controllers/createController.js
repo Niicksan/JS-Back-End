@@ -10,7 +10,6 @@ router.get('/create', (req, res) => {
 router.post('/create', async (req, res) => {
     try {
         const result = await create(req.body);
-        console.log(result);
         res.redirect('/details/' + result._id);
     } catch (err) {
         res.render('/create', {

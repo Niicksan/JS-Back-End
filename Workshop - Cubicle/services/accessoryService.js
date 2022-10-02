@@ -1,5 +1,6 @@
 const Cube = require('../models/Cube');
 const Accessory = require('../models/Accessory');
+const { getById } = require('./cubicleService');
 
 
 async function getAllAccessories() {
@@ -24,7 +25,19 @@ async function createAccessory(accessoryData) {
     return result;
 }
 
+async function attachAccessory(cubicleId, accessoryData) {
+    const accessory = await Accessory.findOne({ name: accessoryData.accessory }).populate('cubes');
+    const cube = await Cube.findById(cubicleId).populate('accessories');
+
+    cube.accessories.push(accessory);
+    accessory.cubes.push(cube);
+
+    await cube.save();
+    await accessory.save();
+}
+
 module.exports = {
     getAllAccessories,
-    createAccessory
+    createAccessory,
+    attachAccessory
 };

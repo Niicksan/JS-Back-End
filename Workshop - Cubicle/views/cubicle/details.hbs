@@ -7,10 +7,10 @@
         <p><span>Difficulty level: </span>{{difficultyLevel}}</p>
         <div style="display: flex">
             <a class="btn" href="/">Back</a>
-            <a class="btn" href="/">Attach</a>
+            <a class="btn" href="/accessory/attach/{{_id}}">Attach</a>
         </div>
     </div>
-    {{/with}}
+
 
     <h2>Accessories</h2>
 
@@ -18,7 +18,11 @@
     <div class="accessories">
 
         {{#each accessories}}
-        {{> accessoryCard}}
+        <div class="accessory">
+            <img src="{{imageUrl}}" alt="{{imageUrl}}">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+        </div>
         {{/each}}
 
         {{else}}
@@ -26,6 +30,7 @@
         <div class="not-found">
             <h3 class="italic">This cube has no accessories yet...</h3>
         </div>
-
-        {{/if}}
+    </div>
+    {{/if}}
+    {{/with}}
 </section>

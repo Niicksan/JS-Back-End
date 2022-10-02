@@ -29,11 +29,11 @@ function getAllCubicles(search, fromDifficulty, toDifficulty) {
 }
 
 function getById(id) {
-    console.log(Cube.findById(id).lean())
-    return Cube.findById(id).lean();
+    return Cube.findById(id).populate('accessories', 'name description imageUrl').lean();
 }
 
 async function create(cubicleData) {
+    console.log(cubicleData);
     const cubicle = {
         name: cubicleData.name,
         description: cubicleData.description,

@@ -11,7 +11,7 @@ module.exports = (app) => {
     app.use(homeController);
     app.use('/cube/', createController);
     app.use('/details', detailsController);
-    app.use('/accessory/', accessoryController);
+    app.use('/accessory', accessoryController);
     app.use('/about', aboutController);
     // TODO attach other controllers
 
