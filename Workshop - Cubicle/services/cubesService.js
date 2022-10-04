@@ -25,7 +25,10 @@ function getAll(search, fromDifficulty, toDifficulty) {
 }
 
 function getAllCubes(search, fromDifficulty, toDifficulty) {
-    return Cube.find({}).lean();
+    return Cube
+        .find({ name: new RegExp('.*' + search + '.*'), difficultyLevel: { $gte: fromDifficulty, $lte: toDifficulty } })
+        .sort({ difficultyLevel: 1 })
+        .lean();
 }
 
 function getCubeById(id) {
