@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { createAccessory, getAllAccessories, attachAccessory } = require('../services/accessoryService');
 const { getCubeById } = require('../services/cubesService');
 
+
 router.get('/create', async (req, res) => {
     res.render('./accessory/createAccessory', {
         title: 'Create new Accessory'
@@ -25,7 +26,6 @@ router.get('/attach/:id', async (req, res) => {
     const cubicleId = req.params.id;
     const cubicle = await getCubeById(cubicleId);
     const accessories = await getAllAccessories(cubicleId);
-    console.log(accessories);
 
     if (cubicle) {
         res.render('./accessory/attachAccessory', {
@@ -45,7 +45,7 @@ router.post('/attach/:id', async (req, res) => {
     try {
         const cubicleId = req.params.id;
         const result = await attachAccessory(cubicleId, req.body)
-        res.redirect('/cube/details/' + req.params.id);
+        res.redirect('/cube/details/' + result._id);
     } catch (err) {
         console.log(err);
         res.render('./accessory/attachAccessory', {
