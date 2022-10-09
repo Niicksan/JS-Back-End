@@ -15,7 +15,7 @@ router.post('/create', async (req, res) => {
     } catch (err) {
         console.log(err);
         res.render('./accessory/createAccessory', {
-            title: 'Request Error',
+            title: 'Create new Accessory',
             error: err.message.split('\n')
         });
     }
@@ -24,7 +24,8 @@ router.post('/create', async (req, res) => {
 router.get('/attach/:id', async (req, res) => {
     const cubicleId = req.params.id;
     const cubicle = await getCubeById(cubicleId);
-    const accessories = await getAllAccessories();
+    const accessories = await getAllAccessories(cubicleId);
+    console.log(accessories);
 
     if (cubicle) {
         res.render('./accessory/attachAccessory', {
@@ -48,7 +49,7 @@ router.post('/attach/:id', async (req, res) => {
     } catch (err) {
         console.log(err);
         res.render('./accessory/attachAccessory', {
-            title: 'Request Error',
+            title: 'Attach new Accessory',
             error: err.message.split('\n')
         });
     }
