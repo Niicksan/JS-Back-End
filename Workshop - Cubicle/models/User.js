@@ -1,13 +1,13 @@
-const { Scheme, model } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 
-const userScheme = new Scheme({
+const userSchema = new Schema({
     username: { type: String, require: true, minlength: [3, 'Username must be at least 3 characters long'] },
     hashedPassword: { type: String, require: true },
     roles: { type: [{ type: String, enum: ['user', 'admin'] }], default: ['user'] }
 });
 
-userScheme.index({ username: 1 }, {
+userSchema.index({ username: 1 }, {
     unique: true,
     collation: {
         locale: 'en',
@@ -15,6 +15,6 @@ userScheme.index({ username: 1 }, {
     }
 });
 
-const User = model('User', userScheme);
+const User = model('User', userSchema);
 
 module.exports = User;

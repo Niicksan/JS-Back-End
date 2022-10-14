@@ -1,6 +1,6 @@
 function hasUser() {
     return (req, res, next) => {
-        if (req.user != undefined) {
+        if (req.user != undefined || req.url.includes('/details')) {
             next();
         } else {
             res.redirect('/auth/login');
@@ -10,7 +10,7 @@ function hasUser() {
 
 function isGuest() {
     return (req, res, next) => {
-        if (req.user != undefined) {
+        if (req.url !== '/logout' && req.user != undefined) {
             res.redirect('/');
         } else {
             next();

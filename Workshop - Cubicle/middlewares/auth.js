@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 
 module.exports = (jwtSecret) => (req, res, next) => {
     const token = req.cookies.jwt;
-
     if (token) {
         try {
             const data = jwt.verify(token, jwtSecret);
@@ -17,4 +16,6 @@ module.exports = (jwtSecret) => (req, res, next) => {
     req.signJwt = (data) => jwt.sign(data, jwtSecret, {
         expiresIn: '1h'
     });
+
+    next();
 };

@@ -1,0 +1,23 @@
+<section>
+    <h1>Register Form</h1>
+    <div class="form">
+        <form action="/auth/register" method="post">
+            {{#if error}}
+            <div class="error-box">
+                {{#each error}}
+                <p><span class="error">{{this}}</span></p>
+                {{/each}}
+            </div>
+            {{/if}}
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="{{body.username}}">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+
+            <label for="repeatPassword">Re-Password</label>
+            <input type="password" id="repeatPassword" name="repass">
+            <input type="submit" value="Register">
+        </form>
+    </div>
+</section>
