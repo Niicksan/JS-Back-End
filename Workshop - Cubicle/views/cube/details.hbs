@@ -7,7 +7,12 @@
         <p><span>Difficulty level: </span>{{difficultyLevel}}</p>
         <div style="display: flex">
             <a class="btn" href="/">Back</a>
+
+            {{#if isOwner}}
+            <a class="btn" href="/cube/edit/{{_id}}">Edit</a>
             <a class="btn" href="/accessory/attach/{{_id}}">Attach</a>
+            <a class="btn" href="/cube/delete/{{_id}}">Delete</a>
+            {{/if}}
         </div>
     </div>
 

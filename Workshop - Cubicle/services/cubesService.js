@@ -24,23 +24,28 @@ function getAll(search, fromDifficulty, toDifficulty) {
         .filter(r => r.difficultyLevel >= fromDifficulty && r.difficultyLevel <= toDifficulty);
 }
 
-function getAllCubes(search, fromDifficulty, toDifficulty) {
-    return Cube
-        .find({ name: new RegExp('.*' + search + '.*'), difficultyLevel: { $gte: fromDifficulty, $lte: toDifficulty } })
+async function getAllCubes(search, fromDifficulty, toDifficulty) {
+    return await Cube
+        .find({ name: new RegExp(search), difficultyLevel: { $gte: fromDifficulty, $lte: toDifficulty } })
         .sort({ difficultyLevel: 1 })
         .lean();
 }
 
-function getCubeById(id) {
-    return Cube.findById(id).populate('accessories', 'name description imageUrl').lean();
+async function getCubeById(id) {
+    try {
+        return await Cube.findById(id).populate('accessories', 'name description imageUrl').lean();;
+    } catch (error) {
+        return null;
+    }
 }
 
-async function create(cubicleData) {
+async function create(cubicleData, ownerId) {
     const cubicle = {
         name: cubicleData.name,
         description: cubicleData.description,
         imageUrl: cubicleData.imageUrl,
-        difficultyLevel: cubicleData.difficultyLevel
+        difficultyLevel: Number(cubicleData.difficultyLevel),
+        owner: ownerId
     };
 
     const missing = Object.entries(cubicle).filter(([k, v]) => !v);
@@ -54,8 +59,33 @@ async function create(cubicleData) {
     return result;
 }
 
+async function update(cubicleId, cubicleData) {
+    const missing = Object.entries(cubicleData).filter(([k, v]) => !v);
+
+    if (missing.length > 0) {
+        throw new Error(missing.map(m => `${m[0]} is required!`).join('\n'));
+    }
+
+    const cubicle = await Cube.findById(cubicleId);
+
+    cubicle.name = cubicleData.name;
+    cubicle.description = cubicleData.description;
+    cubicle.difficultyLevel = cubicleData.difficultyLevel;
+    cubicle.imageUrl = cubicleData.imageUrl;
+
+    await cubicle.save();
+
+    return cubicle;
+}
+
+async function deleteById(cubicleId) {
+    return Cube.findByIdAndRemove(cubicleId);
+}
+
 module.exports = {
     getAllCubes,
     getCubeById,
-    create
+    create,
+    update,
+    deleteById
 };

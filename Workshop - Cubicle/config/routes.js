@@ -13,7 +13,7 @@ module.exports = (app) => {
     app.use(homeController);
     app.use('/auth', isGuest(), authController);
     app.use('/cube', hasUser(), cubeController);
-    app.use('/accessory', accessoryController);
+    app.use('/accessory', hasUser(), accessoryController);
     app.use('/about', aboutController);
     // TODO attach other controllers
 

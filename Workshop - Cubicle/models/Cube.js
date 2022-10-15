@@ -15,7 +15,8 @@ const cubeSchema = new Schema({
         }
     },
     difficultyLevel: { type: Number, required: true, min: 1, max: 100 },
-    accessories: { type: [Types.ObjectId], default: [], ref: 'Accessory' }
+    accessories: { type: [Types.ObjectId], default: [], ref: 'Accessory' },
+    owner: { type: Types.ObjectId, ref: 'User', required: true }
 });
 
 const Cube = model('Cube', cubeSchema);

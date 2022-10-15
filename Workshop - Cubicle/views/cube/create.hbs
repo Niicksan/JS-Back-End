@@ -1,7 +1,7 @@
 <section>
   <h1>Create</h1>
   <div class="form">
-    <form action="" method="post">
+    <form action="/cube/create/" method="post">
       {{#if error}}
       <div class="error-box">
         {{#each error}}
@@ -10,11 +10,14 @@
       </div>
       {{/if}}
       <label for="name">Name</label>
-      <input type="text" id="name" name="name">
+      <input type="text" {{#if error.fields.name}} class="field-error" {{/if}} id="name" name="name"
+        value="{{body.name}}">
       <label for="name">Description</label>
-      <textarea id="name" name="description"></textarea>
+      <textarea id="name" {{#if error.fields.description}} class="field-error" {{/if}}
+        name="description">{{body.description}}</textarea>
       <label for="image">ImageUrl</label>
-      <input type="text" id="image" name="imageUrl">
+      <input type="text" {{#if error.fields.imageUrl}} class="field-error" {{/if}} id="image" name="imageUrl"
+        value="{{body.imageUrl}}">
       <label for="difficulty">Difficulty</label>
       <select id="difficulty" name="difficultyLevel">
         <option value="1">1 - Very Easy</option>
