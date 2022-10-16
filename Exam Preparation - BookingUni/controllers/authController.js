@@ -1,11 +1,10 @@
 const { register, login } = require('../services/authService');
 const { parseError } = require('../utils/errorParser');
-
+const validator = require('validator');
 const authController = require('express').Router();
 
 
 authController.get('/register', (req, res) => {
-    // TODO replace with real view
     res.render('./auth/register', {
         title: 'Register Page'
     });
@@ -13,16 +12,23 @@ authController.get('/register', (req, res) => {
 
 authController.post('/register', async (req, res) => {
     try {
-        if (req.body.username === '' || req.body.password === '') {
+        if (req.body.email === '' || req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');
+        }
+
+        if (validator.isEmail(req.body.email) === false) {
+            throw new Error('Invalid email');
+        }
+
+        if (req.body.password.length < 5) {
+            throw new Error('Passwords must be at least 5 characters long');
         }
 
         if (req.body.password !== req.body.repass) {
             throw new Error('Passwords don\'t match');
         }
 
-        // TODO Check if register create session
-        const token = await register(req.body.username, req.body.password);
+        const token = await register(req.body.email, req.body.username, req.body.password);
         res.cookie('token', token);
         res.redirect('/');
     } catch (error) {
@@ -34,14 +40,15 @@ authController.post('/register', async (req, res) => {
             title: 'Register Page',
             errors,
             body: {
+                email: req.body.email,
                 username: req.body.username
+
             }
         });
     }
 });
 
 authController.get('/login', (req, res) => {
-    // TODO replace with real view
     res.render('./auth/login', {
         title: 'Login Page'
     });
@@ -53,7 +60,7 @@ authController.post('/login', async (req, res) => {
             throw new Error('All fields are required');
         }
 
-        const token = await login(req.body.username, req.body.password);
+        const token = await login(req.body.email, req.body.password);
         res.cookie('token', token);
         res.redirect('/');
     } catch (error) {
@@ -65,7 +72,7 @@ authController.post('/login', async (req, res) => {
             title: 'Login Page',
             errors,
             body: {
-                username: req.body.username
+                email: req.body.email
             }
         });
     }

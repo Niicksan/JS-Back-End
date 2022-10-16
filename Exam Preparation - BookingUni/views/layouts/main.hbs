@@ -5,23 +5,42 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document - {{title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>BookingUni - {{title}}</title>
 </head>
 
 <body>
-    <a href="/auth/login">Login</a>
-    <a href="/auth/register">Register</a>
-    <a href="/auth/logout">Logout</a>
+    <div id="container">
+        {{#if errors}}
+        <div>
+            {{#each errors}}
+            <div class="notification errorBox">
+                <span>{{this}}</span>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
 
-    {{#if errors}}
-    <div>
-        {{#each errors}}
-        <p>{{this}}</p>
-        {{/each}}
+        <nav>
+            <div class="left-container">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/hotel/create">Add +</a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register">Register</a></li>
+                </ul>
+            </div>
+            <div class="right-container">
+                <a href="/profile" class="log-out">{{name}}</a>
+                <a href="/auth/logout" class="log-out">Logout</a>
+            </div>
+        </nav>
+
+        {{{body}}}
+
+        <footer>@SoftUni - JS Back-end - BookingUni 2020</footer>
     </div>
-    {{/if}}
 
-    {{{body}}}
 </body>
 
 </html
