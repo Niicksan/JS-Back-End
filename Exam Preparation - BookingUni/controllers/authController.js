@@ -1,16 +1,17 @@
 const { register, login } = require('../services/authService');
 const { parseError } = require('../utils/errorParser');
 const validator = require('validator');
+const { isGuest } = require('../middlewares/guards');
 const authController = require('express').Router();
 
 
-authController.get('/register', (req, res) => {
+authController.get('/register', isGuest(), (req, res) => {
     res.render('./auth/register', {
         title: 'Register Page'
     });
 });
 
-authController.post('/register', async (req, res) => {
+authController.post('/register', isGuest(), async (req, res) => {
     try {
         if (req.body.email === '' || req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');
@@ -48,13 +49,13 @@ authController.post('/register', async (req, res) => {
     }
 });
 
-authController.get('/login', (req, res) => {
+authController.get('/login', isGuest(), (req, res) => {
     res.render('./auth/login', {
         title: 'Login Page'
     });
 });
 
-authController.post('/login', async (req, res) => {
+authController.post('/login', isGuest(), async (req, res) => {
     try {
         if (req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');

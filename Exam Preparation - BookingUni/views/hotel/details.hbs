@@ -1,23 +1,28 @@
 <section id="viewhotelDetails">
     <h2>Details</h2>
+    {{#with hotel}}
     <div class="hotel-ticket">
         <div class="hotel-left">
-            <img src="https://image.freepik.com/free-vector/flat-hotel-building-town_52683-10040.jpg" alt="">
+            <img src="{{imageUrl}}" alt="">
         </div>
         <div class="hotel-right">
             <div>
-                <h3>Auckland Inn</h3>
+                <h3>{{name}}</h3>
             </div>
-            <div>
-                Auckland
-            </div>
-            <p><span>Free rooms: 43</span> </p>
+            <div>{{city}}</div>
+            <p><span>Free rooms: {{rooms}}</span> </p>
+
+            {{#if isOwner}}
+            <a href="/hotel/edit/{{_id}}" class="edit">Edit</a>
+            <a href="/hotel/delete/{{_id}}" class="remove">Delete</a>
+            {{else}}
+            {{#if isBooked}}
             <p><span class="green">You already have booked a room</span> </p>
-
-            <a href="" class="book">Book</a>
-            <a href="" class="edit">Edit</a>
-            <a href="" class="remove">Delete</a>
+            {{else}}
+            <a href="/hotel/book/{{_id}}" class="book">Book</a>
+            {{/if}}
+            {{/if}}
         </div>
-
     </div>
+    {{/with}}
 </section>
