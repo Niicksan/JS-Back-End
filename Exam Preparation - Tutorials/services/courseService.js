@@ -18,22 +18,22 @@ async function createCourse(course) {
     return Course.create(course);
 }
 
-async function getByIdNotLeaned(id) {
+async function getByIdRaw(id) {
     return Course.findById(id);
 }
 
 async function getById(id) {
-    try {
-        return Course.findById(id).lean();
+    // try {
+    //     return Course.findById(id).lean();
 
-    } catch (error) {
-        return null;
-    }
+    // } catch (error) {
+    //     return null;
+    // }
+
+    return Course.findById(id).lean();
 }
 
-async function updateById(id, data) {
-    const course = await getByIdNotLeaned(id);
-
+async function updateById(course, data) {
     course.title = data.title;
     course.description = data.description;
     course.imageUrl = data.imageUrl;
@@ -47,7 +47,7 @@ async function deleteById(id) {
 }
 
 async function enrollUser(courseId, userId) {
-    const course = await getByIdNotLeaned(courseId);
+    const course = await getByIdRaw(courseId);
 
     course.users.push(userId)
     course.usersCount++;
@@ -59,6 +59,7 @@ module.exports = {
     getRecent,
     createCourse,
     getById,
+    getByIdRaw,
     updateById,
     deleteById,
     enrollUser

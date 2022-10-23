@@ -1,26 +1,10 @@
-const { createCourse, getById, deleteById, updateById, enrollUser } = require('../services/courseService');
-const { parseError } = require('../utils/errorParser');
-
 const courseController = require('express').Router();
 
-courseController.get('/details/:id', async (req, res) => {
-    const course = await getById(req.params.id);
+const { createCourse, getById, deleteById, updateById, enrollUser } = require('../services/courseService');
+const { parseError } = require('../utils/errorParser');
+const preloader = require('../middlewares/preloader');
+const { isOwner } = require('../middlewares/guards');
 
-    // TBD Redirect to 404 Page - item not found
-    if (!course) {
-        res.render('/', {
-            title: 'Home Page',
-            cubicle
-        });
-    }
-
-    course.isOwner = course.owner.toString() == req.user._id.toString();
-    course.enrolled = course.users.map(x => x.toString()).includes(req.user._id.toString());
-    res.render('./course/details', {
-        title: course.title,
-        course
-    });
-});
 
 courseController.get('/create', (req, res) => {
     res.render('./course/create', {
@@ -49,17 +33,23 @@ courseController.post('/create', async (req, res) => {
     }
 });
 
-courseController.get('/edit/:id', async (req, res) => {
-    const course = await getById(req.params.id);
+courseController.get('/details/:id', preloader(true), async (req, res) => {
+    const course = res.locals.course;
 
     // TBD Redirect to 404 Page - item not found
-    if (!course) {
-        return res.redirect('/');
-    }
 
-    if (course.owner.toString() != req.user._id.toString()) {
-        return res.redirect('/auth/login');
-    }
+    course.isOwner = course.owner.toString() == req.user._id.toString();
+    course.enrolled = course.users.map(x => x.toString()).includes(req.user._id.toString());
+    res.render('./course/details', {
+        title: course.title,
+        course
+    });
+});
+
+courseController.get('/edit/:id', preloader(true), isOwner(), async (req, res) => {
+    const course = res.locals.course;
+
+    // TBD Redirect to 404 Page - item not found
 
     res.render('./course/edit', {
         title: `Edit Course ${course.title}`,
@@ -67,20 +57,13 @@ courseController.get('/edit/:id', async (req, res) => {
     });
 });
 
-courseController.post('/edit/:id', async (req, res) => {
-    const course = await getById(req.params.id);
+courseController.post('/edit/:id', preloader(), isOwner(), async (req, res) => {
+    const course = res.locals.course;
 
     // TBD Redirect to 404 Page - item not found
-    if (!course) {
-        return res.redirect('/');
-    }
-
-    if (course.owner.toString() != req.user._id.toString()) {
-        return res.redirect('/auth/login');
-    }
 
     try {
-        await updateById(req.params.id, req.body);
+        await updateById(course, req.body);
         res.redirect(`/course/details/${req.params.id}`);
     } catch (error) {
         res.render('./course/edit', {
@@ -91,28 +74,43 @@ courseController.post('/edit/:id', async (req, res) => {
     }
 });
 
-courseController.get('/delete/:id', async (req, res) => {
-    const course = await getById(req.params.id);
-
+courseController.get('/delete/:id', preloader(), isOwner(), async (req, res) => {
     // TBD Redirect to 404 Page - item not found
-
-    if (course.owner.toString() != req.user._id.toString()) {
-        return res.redirect('/auth/login');
-    }
 
     await deleteById(req.params.id);
     res.redirect('/');
 });
 
-courseController.get('/enroll/:id', async (req, res) => {
-    const course = await getById(req.params.id);
+courseController.get('/enroll/:id', preloader(), async (req, res) => {
+    const course = res.locals.course;
 
     if (course.owner.toString() != req.user._id.toString()
         && course.users.map(x => x.toString()).includes(req.user._id.toString()) == false) {
-        await enrollUser(req.params.id, req.user._id)
+        await enrollUser(course, req.user._id)
     }
 
-    return res.redirect(`/course/details/${req.params.id}`);
+    res.redirect(`/course/details/${req.params.id}`);
+
+    // try {
+    //     if (course.owner.toString() == req.user._id.toString()) {
+    //         course.isOwner = true;
+    //         throw new Error('Can not enroll your own course');
+    //     }
+
+    //     if (course.users.map(x => x.toString()).includes(req.user._id.toString())) {
+    //         course.enrolled = true;
+    //         throw new Error('You are already enrolled to this course')
+    //     }
+
+    //     await enrollUser(course, req.user._id);
+    //     res.redirect(`/course/details/${req.params.id}`);
+    // } catch (error) {
+    //     res.render('./course/details', {
+    //         title: course.title,
+    //         course,
+    //         errors: parseError(error)
+    //     });
+    // }
 });
 
 module.exports = courseController;
