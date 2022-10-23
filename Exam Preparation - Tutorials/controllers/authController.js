@@ -40,7 +40,7 @@ authController.post('/register', isGuest(),
             res.render('./auth/register', {
                 title: 'Register Page',
                 errors,
-                body: {
+                user: {
                     username: req.body.username
                 }
             });
@@ -68,7 +68,7 @@ authController.post('/login', isGuest(), async (req, res) => {
         res.render('./auth/login', {
             title: 'Login Page',
             errors,
-            body: {
+            user: {
                 username: req.body.username
             }
         });
