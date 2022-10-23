@@ -46,9 +46,7 @@ async function deleteById(id) {
     return Course.findByIdAndDelete(id);
 }
 
-async function enrollUser(courseId, userId) {
-    const course = await getByIdRaw(courseId);
-
+async function enrollUser(course, userId) {
     course.users.push(userId)
     course.usersCount++;
     return course.save();
