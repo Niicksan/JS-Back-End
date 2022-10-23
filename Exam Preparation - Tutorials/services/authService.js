@@ -19,7 +19,6 @@ async function register(username, password) {
         hashedPassword
     })
 
-    // TODO Check if you have to create session
     return createSession(user);
 }
 

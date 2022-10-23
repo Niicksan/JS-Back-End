@@ -1,53 +1,59 @@
+const authController = require('express').Router();
+
+const { body, validationResult } = require('express-validator');
+const { isGuest } = require('../middlewares/guards');
 const { register, login } = require('../services/authService');
 const { parseError } = require('../utils/errorParser');
 
-const authController = require('express').Router();
 
-
-authController.get('/register', (req, res) => {
-    // TODO replace with real view
+authController.get('/register', isGuest(), (req, res) => {
     res.render('./auth/register', {
         title: 'Register Page'
     });
 });
 
-authController.post('/register', async (req, res) => {
-    try {
-        if (req.body.username === '' || req.body.password === '') {
-            throw new Error('All fields are required');
-        }
+authController.post('/register', isGuest(),
+    body('username')
+        .isLength({ min: 5 }).withMessage('Username must be at least 5 characters long')
+        .isAlphanumeric().withMessage('Username may contain only letters and numbers'),
+    body('password')
+        .isLength({ min: 5 }).withMessage('Password must be at least 5 characters long')
+        .isAlphanumeric().withMessage('Password may contain only letters and numbers'),
+    async (req, res) => {
+        try {
+            const { errors } = validationResult(req);
 
-        if (req.body.password !== req.body.repass) {
-            throw new Error('Passwords don\'t match');
-        }
-
-        // TODO Check if register create session
-        const token = await register(req.body.username, req.body.password);
-        res.cookie('token', token);
-        res.redirect('/');
-    } catch (error) {
-        // TODO Add Error Parser
-        const errors = parseError(error);
-
-        // TODO Add Error display to the template
-        res.render('./auth/register', {
-            title: 'Register Page',
-            errors,
-            body: {
-                username: req.body.username
+            if (errors.length > 0) {
+                throw errors;
             }
-        });
-    }
-});
 
-authController.get('/login', (req, res) => {
-    // TODO replace with real view
+            if (req.body.password !== req.body.repass) {
+                throw new Error('Passwords don\'t match');
+            }
+
+            const token = await register(req.body.username, req.body.password);
+            res.cookie('token', token);
+            res.redirect('/');
+        } catch (error) {
+            const errors = parseError(error);
+
+            res.render('./auth/register', {
+                title: 'Register Page',
+                errors,
+                body: {
+                    username: req.body.username
+                }
+            });
+        }
+    });
+
+authController.get('/login', isGuest(), (req, res) => {
     res.render('./auth/login', {
         title: 'Login Page'
     });
 });
 
-authController.post('/login', async (req, res) => {
+authController.post('/login', isGuest(), async (req, res) => {
     try {
         if (req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');
@@ -57,10 +63,8 @@ authController.post('/login', async (req, res) => {
         res.cookie('token', token);
         res.redirect('/');
     } catch (error) {
-        // TODO Add Error Parser
         const errors = parseError(error);
 
-        // TODO Add Error display to the template
         res.render('./auth/login', {
             title: 'Login Page',
             errors,
