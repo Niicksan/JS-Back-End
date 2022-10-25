@@ -1,11 +1,20 @@
 const homeController = require('express').Router();
 
+const { getAllBooks } = require('../services/bookService');
 
-// TODO Replace with the real controller
+
 homeController.get('/', (req, res) => {
     res.render('home', {
-        title: 'Home Page',
-        user: req.user
+        title: 'Home Page'
+    });
+});
+
+homeController.get('/catalog', async (req, res) => {
+    const books = courses = await getAllBooks(req.query.search);
+
+    res.render('catalog', {
+        title: 'Catalog Page',
+        books
     });
 });
 

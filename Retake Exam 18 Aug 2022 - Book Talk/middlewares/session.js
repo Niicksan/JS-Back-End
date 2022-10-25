@@ -7,7 +7,7 @@ module.exports = () => (req, res, next) => {
         try {
             const userData = verifyToken(token);
             req.user = userData;
-
+            res.locals.email = userData.email;
         } catch (error) {
             res.clearCookie('token');
             res.redirect('/auth/login');
