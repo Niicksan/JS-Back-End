@@ -1,5 +1,7 @@
 const homeController = require('express').Router();
 
+const { getAllCryptos } = require('../services/cryptoService');
+
 
 homeController.get('/', (req, res) => {
     res.render('home', {
@@ -7,9 +9,12 @@ homeController.get('/', (req, res) => {
     });
 });
 
-homeController.get('/catalog', (req, res) => {
+homeController.get('/catalog', async (req, res) => {
+    const cryptos = await getAllCryptos();
+
     res.render('catalog', {
-        title: 'All Crypto'
+        title: 'All Crypto',
+        cryptos
     });
 });
 
