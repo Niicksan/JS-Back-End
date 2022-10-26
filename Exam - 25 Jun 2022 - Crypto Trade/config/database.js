@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 
-// TODO change database name
-const CONNECTION_STRING = 'mongodb://localhost:27017/scaffoldDb';
+const CONNECTION_STRING = 'mongodb://localhost:27017/crypto';
 
 module.exports = async (app) => {
     try {

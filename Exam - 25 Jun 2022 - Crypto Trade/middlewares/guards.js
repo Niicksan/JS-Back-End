@@ -11,7 +11,7 @@ function hasUser() {
 function isGuest() {
     return (req, res, next) => {
         if (req.user) {
-            res.redirect('/'); // TODO Check for correct behavior
+            res.redirect('/');
         } else {
             next()
         }
