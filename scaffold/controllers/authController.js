@@ -24,7 +24,7 @@ authController.post('/register', async (req, res) => {
         // TODO Check if register create session
         const token = await register(req.body.username, req.body.password);
         res.cookie('token', token);
-        res.redirect('/');
+        res.redirect('/'); // TODO Check the redirect
     } catch (error) {
         // TODO Add Error Parser
         const errors = parseError(error);
@@ -33,7 +33,7 @@ authController.post('/register', async (req, res) => {
         res.render('./auth/register', {
             title: 'Register Page',
             errors,
-            body: {
+            user: {
                 username: req.body.username
             }
         });
@@ -55,7 +55,7 @@ authController.post('/login', async (req, res) => {
 
         const token = await login(req.body.username, req.body.password);
         res.cookie('token', token);
-        res.redirect('/');
+        res.redirect('/'); // TODO Check the redirect
     } catch (error) {
         // TODO Add Error Parser
         const errors = parseError(error);
@@ -64,7 +64,7 @@ authController.post('/login', async (req, res) => {
         res.render('./auth/login', {
             title: 'Login Page',
             errors,
-            body: {
+            user: {
                 username: req.body.username
             }
         });
