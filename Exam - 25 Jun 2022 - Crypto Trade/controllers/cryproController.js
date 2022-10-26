@@ -1,7 +1,7 @@
 const cryptoController = require('express').Router();
 
 const { hasUser, isOwner } = require('../middlewares/guards');
-const { createCrypto } = require('../services/cryptoService');
+const { createCrypto, deleteCryptoById, updateCryptoById, getCryptoById, buyCrypto } = require('../services/cryptoService');
 const { parseError } = require('../utils/errorParser');
 const preloader = require('../middlewares/preloader');
 
@@ -51,12 +51,65 @@ cryptoController.get('/details/:id', preloader(true), async (req, res) => {
 });
 
 cryptoController.get('/edit/:id', preloader(true), isOwner(), async (req, res) => {
-    const book = res.locals.book;
+    const crypto = res.locals.crypto;
 
-    res.render('./book/edit', {
-        title: `Edit Book ${book.title}`,
-        book
+    res.render('./crypto/edit', {
+        title: `Edit Crypto ${crypto.title}`,
+        crypto
     });
+});
+
+cryptoController.post('/edit/:id', preloader(), isOwner(), async (req, res) => {
+    const crypto = res.locals.crypto;
+
+    try {
+        await updateCryptoById(crypto, req.body);
+        res.redirect(`/crypto/details/${req.params.id}`);
+    } catch (error) {
+        res.locals.errors = parseError(error);
+        res.render('./crypto/edit', {
+            title: `Edit Crypto ${course.title}`,
+            crypto: req.body
+        });
+    }
+});
+
+cryptoController.get('/delete/:id', preloader(), isOwner(), async (req, res) => {
+    await deleteCryptoById(req.params.id);
+    res.redirect('/catalog');
+});
+
+cryptoController.get('/buy/:id', async (req, res) => {
+    const crypto = await getCryptoById(req.params.id);
+
+    // if (course.owner.toString() != req.user._id.toString()
+    //     && course.users.map(x => x.toString()).includes(req.user._id.toString()) == false) {
+    //     await enrollUser(course, req.user._id)
+    // }~
+
+    // res.redirect(`/course/details/${req.params.id}`);
+
+    try {
+        if (crypto.owner.toString() == req.user._id.toString()) {
+            crypto.isOwner = true;
+            throw new Error('You can not buy your own crypto coins');
+        }
+
+        if (crypto.users.map(x => x.toString()).includes(req.user._id.toString())) {
+            crypto.isBought = true;
+            throw new Error('You already bought these crypto coins');
+        }
+
+        await buyCrypto(crypto, req.user._id);
+        res.redirect(`/crypto/details/${req.params.id}`);
+    } catch (error) {
+        res.locals.errors = parseError(error);
+
+        res.render('./crypto/details', {
+            title: crypto.title,
+            crypto
+        });
+    }
 });
 
 module.exports = cryptoController;

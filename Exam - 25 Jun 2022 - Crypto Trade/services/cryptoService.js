@@ -31,7 +31,7 @@ async function deleteCryptoById(id) {
     return Crypto.findByIdAndDelete(id);
 }
 
-async function bayCrypto(crypto, userId) {
+async function buyCrypto(crypto, userId) {
     crypto.users.push(userId)
     return crypto.save();
 }
@@ -43,5 +43,5 @@ module.exports = {
     createCrypto,
     updateCryptoById,
     deleteCryptoById,
-    bayCrypto
+    buyCrypto
 }
