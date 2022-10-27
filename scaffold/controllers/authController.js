@@ -1,17 +1,18 @@
+const authController = require('express').Router();
+
+const { isGuest } = require('../middlewares/guards');
 const { register, login } = require('../services/authService');
 const { parseError } = require('../utils/errorParser');
 
-const authController = require('express').Router();
 
-
-authController.get('/register', (req, res) => {
+authController.get('/register', isGuest(), (req, res) => {
     // TODO replace with real view
     res.render('./auth/register', {
         title: 'Register Page'
     });
 });
 
-authController.post('/register', async (req, res) => {
+authController.post('/register', isGuest(), async (req, res) => {
     try {
         if (req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');
@@ -27,12 +28,11 @@ authController.post('/register', async (req, res) => {
         res.redirect('/'); // TODO Check the redirect
     } catch (error) {
         // TODO Add Error Parser
-        const errors = parseError(error);
+        res.locals.errors = parseError(error);
 
         // TODO Add Error display to the template
         res.render('./auth/register', {
             title: 'Register Page',
-            errors,
             user: {
                 username: req.body.username
             }
@@ -40,14 +40,14 @@ authController.post('/register', async (req, res) => {
     }
 });
 
-authController.get('/login', (req, res) => {
+authController.get('/login', isGuest(), (req, res) => {
     // TODO replace with real view
     res.render('./auth/login', {
         title: 'Login Page'
     });
 });
 
-authController.post('/login', async (req, res) => {
+authController.post('/login', isGuest(), async (req, res) => {
     try {
         if (req.body.username === '' || req.body.password === '') {
             throw new Error('All fields are required');
@@ -58,12 +58,11 @@ authController.post('/login', async (req, res) => {
         res.redirect('/'); // TODO Check the redirect
     } catch (error) {
         // TODO Add Error Parser
-        const errors = parseError(error);
+        res.locals.errors = parseError(error);
 
         // TODO Add Error display to the template
         res.render('./auth/login', {
             title: 'Login Page',
-            errors,
             user: {
                 username: req.body.username
             }
