@@ -5,6 +5,12 @@ async function getAllCryptos() {
     return Crypto.find({}).lean();
 }
 
+async function getAllCryptosBySearch(search, selectedMethod) {
+    return await Crypto
+        .find({ name: new RegExp(search), method: selectedMethod })
+        .lean();
+}
+
 async function getCryptoById(id) {
     return Crypto.findById(id).lean();
 }
@@ -38,6 +44,7 @@ async function buyCrypto(crypto, userId) {
 
 module.exports = {
     getAllCryptos,
+    getAllCryptosBySearch,
     getCryptoById,
     getCryptoByIdRaw,
     createCrypto,
