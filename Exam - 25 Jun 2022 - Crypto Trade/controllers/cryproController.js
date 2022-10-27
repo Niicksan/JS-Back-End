@@ -53,6 +53,15 @@ cryptoController.get('/details/:id', preloader(true), async (req, res) => {
 cryptoController.get('/edit/:id', preloader(true), isOwner(), async (req, res) => {
     const crypto = res.locals.crypto;
 
+    const methods = {
+        'crypto-wallet': 'Crypto Wallet',
+        'credit-card': 'Credit Card',
+        'debit-card': 'Debit Card"',
+        'paypal': 'PayPal',
+
+    }
+
+    crypto.selectedMethod = methods[crypto.method];
     res.render('./crypto/edit', {
         title: `Edit Crypto ${crypto.title}`,
         crypto
