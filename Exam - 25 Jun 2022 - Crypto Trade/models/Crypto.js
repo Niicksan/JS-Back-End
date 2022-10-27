@@ -30,7 +30,7 @@ cryptoSchema.index({ name: 1 }, {
     }
 });
 
-cryptoSchema.index({ owner: 1 }, {
+cryptoSchema.index({ method: 1 }, {
     collation: {
         locale: 'en',
         strength: 2

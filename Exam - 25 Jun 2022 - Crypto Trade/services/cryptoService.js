@@ -5,10 +5,17 @@ async function getAllCryptos() {
     return Crypto.find({}).lean();
 }
 
-async function getAllCryptosBySearch(search, selectedMethod) {
-    return await Crypto
-        .find({ name: new RegExp(search), method: selectedMethod })
-        .lean();
+async function getAllCryptosBySearch(search, method) {
+    const query = {};
+    if (search) {
+        query.name = new RegExp(search, 'i');
+    }
+
+    if (method) {
+        query.method = new RegExp(method, 'i');
+    }
+
+    return await Crypto.find(query).collation({ locale: 'en', strength: 2 }).lean();
 }
 
 async function getCryptoById(id) {

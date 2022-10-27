@@ -56,9 +56,8 @@ cryptoController.get('/edit/:id', preloader(true), isOwner(), async (req, res) =
     const methods = {
         'crypto-wallet': 'Crypto Wallet',
         'credit-card': 'Credit Card',
-        'debit-card': 'Debit Card"',
+        'debit-card': 'Debit Card',
         'paypal': 'PayPal',
-
     }
 
     crypto.selectedMethod = methods[crypto.method];
