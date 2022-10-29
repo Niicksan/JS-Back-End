@@ -10,16 +10,6 @@ async function getFirstThreeAds() {
     return Ad.find({}).limit(3).lean();
 }
 
-async function getAllAdsByAuthor(email, userId) {
-    const query = {};
-
-    if (author) {
-        query.name = new RegExp(search, 'i');
-    }
-
-    return await Ad.find(query).collation({ locale: 'en', strength: 2 }).find({ author: userId }).lean();
-}
-
 async function getAdById(id) {
     return Ad.findById(id).populate('author', 'email').populate('applications', 'email description').lean();
 }
@@ -45,22 +35,14 @@ async function deleteAdById(id) {
     return Ad.findByIdAndDelete(id);
 }
 
-async function getAdsByUser(email) {
-    try {
-        const query = new RegExp(email, "i");
-
-        return await User.find({ email: query }).collation({ locale: 'en', strength: 2 }).populate('myAds', 'headline companyName').lean();
-    } catch (error) {
-        return null;
-    }
-
-    // const ads = await Ad.find().populate("author");
-    // return ads.filter((x) => regEx.test(x.author.email));
+async function getAdsByUser(search) {
+    const ads = await Ad.find().populate("author").lean();
+    return ads.filter(x => x.author.email == search);
 }
 
 async function applyForAd(adId, userId) {
     const ad = await getAdoByIdRaw(adId);
-    console.log(ad);
+
     ad.applications.push(userId);
     ad.applicationsCount++;
     return ad.save();
@@ -69,7 +51,6 @@ async function applyForAd(adId, userId) {
 module.exports = {
     getAllAds,
     getFirstThreeAds,
-    getAllAdsByAuthor,
     getAdById,
     getAdoByIdRaw,
     createAd,

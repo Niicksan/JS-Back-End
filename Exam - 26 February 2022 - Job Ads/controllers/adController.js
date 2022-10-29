@@ -8,7 +8,7 @@ const preloader = require('../middlewares/preloader');
 
 adController.get('/details/:id', preloader(true), async (req, res) => {
     const ad = res.locals.ad;
-    console.log(ad);
+
     ad.isOwner = ad.author._id.toString() == req.user._id.toString();
     ad.isApplied = ad.applications.map(x => x._id.toString()).includes(req.user._id.toString());
     res.render('./ad/details', {
@@ -85,7 +85,7 @@ adController.get('/delete/:id', preloader(), isOwner(), async (req, res) => {
 
 adController.get('/apply/:id', preloader(true), async (req, res) => {
     const ad = res.locals.ad;
-    console.log(ad);
+
     try {
         if (ad.author._id.toString() == req.user._id.toString()) {
             ad.isOwner = true;
