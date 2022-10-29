@@ -30,10 +30,10 @@ cryptoController.post('/create', hasUser(), async (req, res) => {
         await createCrypto(crypto);
         res.redirect('/catalog');
     } catch (error) {
-        // res.locals.errors = parseError(error);
+        res.locals.errors = parseError(error);
+
         res.render('./crypto/create', {
             title: 'Create Crypt',
-            errors: parseError(error),
             crypto
         });
     }
@@ -45,7 +45,7 @@ cryptoController.get('/details/:id', preloader(true), async (req, res) => {
     crypto.isOwner = crypto.owner.toString() == req.user._id.toString();
     crypto.isBought = crypto.users.map(x => x.toString()).includes(req.user._id.toString());
     res.render('./crypto/details', {
-        title: crypto.title,
+        title: crypto.name,
         crypto
     });
 });
@@ -62,7 +62,7 @@ cryptoController.get('/edit/:id', preloader(true), isOwner(), async (req, res) =
 
     crypto.selectedMethod = methods[crypto.method];
     res.render('./crypto/edit', {
-        title: `Edit Crypto ${crypto.title}`,
+        title: `Edit Crypto ${crypto.name}`,
         crypto
     });
 });
@@ -70,14 +70,22 @@ cryptoController.get('/edit/:id', preloader(true), isOwner(), async (req, res) =
 cryptoController.post('/edit/:id', preloader(), isOwner(), async (req, res) => {
     const crypto = res.locals.crypto;
 
+    const methods = {
+        'crypto-wallet': 'Crypto Wallet',
+        'credit-card': 'Credit Card',
+        'debit-card': 'Debit Card',
+        'paypal': 'PayPal',
+    }
+
     try {
         await updateCryptoById(crypto, req.body);
         res.redirect(`/crypto/details/${req.params.id}`);
     } catch (error) {
         res.locals.errors = parseError(error);
+
         res.render('./crypto/edit', {
-            title: `Edit Crypto ${course.title}`,
-            crypto: req.body
+            title: `Edit Crypto ${crypto.name}`,
+            crypto: Object.assign(req.body, { _id: req.params.id, selectedMethod: methods[crypto.method] })
         });
     }
 });
@@ -87,8 +95,8 @@ cryptoController.get('/delete/:id', preloader(), isOwner(), async (req, res) => 
     res.redirect('/catalog');
 });
 
-cryptoController.get('/buy/:id', async (req, res) => {
-    const crypto = await getCryptoById(req.params.id);
+cryptoController.get('/buy/:id', preloader(true), async (req, res) => {
+    const crypto = res.locals.crypto;;
 
     // if (course.owner.toString() != req.user._id.toString()
     //     && course.users.map(x => x.toString()).includes(req.user._id.toString()) == false) {
@@ -108,13 +116,13 @@ cryptoController.get('/buy/:id', async (req, res) => {
             throw new Error('You already bought these crypto coins');
         }
 
-        await buyCrypto(crypto, req.user._id);
+        await buyCrypto(req.params.id, req.user._id);
         res.redirect(`/crypto/details/${req.params.id}`);
     } catch (error) {
         res.locals.errors = parseError(error);
 
         res.render('./crypto/details', {
-            title: crypto.title,
+            title: crypto.name,
             crypto
         });
     }

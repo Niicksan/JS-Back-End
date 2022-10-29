@@ -44,7 +44,9 @@ async function deleteCryptoById(id) {
     return Crypto.findByIdAndDelete(id);
 }
 
-async function buyCrypto(crypto, userId) {
+async function buyCrypto(cryptoId, userId) {
+    const crypto = await getCryptoByIdRaw(cryptoId);
+
     crypto.users.push(userId)
     return crypto.save();
 }
