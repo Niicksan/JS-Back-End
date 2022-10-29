@@ -1,13 +1,13 @@
-// const { getBookById, getBookByIdRaw } = require("../services/bookService");
+const { getAdById, getAdoByIdRaw } = require("../services/adService");
 
 
-// module.exports = (lean) => async (req, res, next) => {
-//     if (lean) {
-//         res.locals.book = await getBookById(req.params.id);
+module.exports = (lean) => async (req, res, next) => {
+    if (lean) {
+        res.locals.ad = await getAdById(req.params.id);
 
-//     } else {
-//         res.locals.book = await getBookByIdRaw(req.params.id);
-//     }
+    } else {
+        res.locals.ad = await getAdoByIdRaw(req.params.id);
+    }
 
-//     next();
-// };
+    next();
+};
