@@ -1,0 +1,20 @@
+<section id="edit-container">
+    <div class="edit-container-info">
+        <h1>Edit Blog</h1>
+        <form action="/blog/edit/{{blog._id}}" method="post">
+            <label>Title:</label>
+            <input type="text" id="name" name="title" value="{{blog.title}}">
+
+            <label>Image:</label>
+            <input type="text" id="image" name="image" value="{{blog.image}}">
+
+            <label>Content:</label>
+            <textarea id="content" name="content">{{blog.content}}</textarea>
+
+            <label>Blog Category:</label>
+            <input type="text" id="" name="category" value="{{blog.category}}">
+
+            <input type="submit" id="btn" value="EDIT">
+        </form>
+    </div>
+</section>
