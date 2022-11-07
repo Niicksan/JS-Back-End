@@ -1,9 +1,10 @@
 const profileController = require('express').Router();
 
+const { hasUser } = require('../middlewares/guards');
 const { getAllBlogsCreatedByUser, getAllBlogsUserFollows } = require('../services/blogService');
 
 
-profileController.get('/', async (req, res) => {
+profileController.get('/', hasUser(), async (req, res) => {
     const blogsCreated = await getAllBlogsCreatedByUser(req.user._id);
     const blogsFollowing = await getAllBlogsUserFollows(req.user._id);
 
